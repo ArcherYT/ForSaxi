@@ -1,6 +1,7 @@
 const { Client, MessageEmbed, Message, MessageReaction } = require('discord.js');
 const bot = new Client();
 const token = 'token'
+const db = require('quick.db') //make sure you have quick.db installed
 
 const PREFIX = "!"
 
@@ -44,6 +45,23 @@ bot.on('message', async message =>{
             console.log(err);
         }
     }
+    break;
+    case('setprefix')
+        if (!message.member.hasPermission('MANAGE_GUILD')) return message.channel.send(
+      new Discord.MessageEmbed()
+      .setDescription(`${message.author.username}, You do not have permissions to run this command!`)
+      .setColor('#00FFFF')
+    )
+    if (!args[0]) return message.channel.send(
+      new Discord.MessageEmbed()
+      .setDescription('Please define a prefix!')
+      .setColor('#00FFFF')
+    )
+    await db.set(`prefix_${message.member.guild.id}`, args[0])
+    message.channel.send(
+      new Discord.MessageEmbed()
+      .setDescription(`The prefix for **${message.member.guild.name}** has successfully been changed to **${args[0]}**! :tada:`)
+    )       
     break;
     }
 })
